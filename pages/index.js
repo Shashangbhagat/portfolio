@@ -1,6 +1,24 @@
 import Head from 'next/head'
+import React from 'react';
 
 export default function Home() {
+  const [small, setSmall] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
+
+  const show = !small || open;
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      if(window.innerWidth < 656) {
+        setSmall(true);
+      } else {
+        setSmall(false);
+      }
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize);
+  }, [process.browser && window.innerWidth])
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <Head>
@@ -8,21 +26,30 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex flex-col w-full flex-1 relative">
-        <div className="fixed bg-indigo-900 text-white z-10 ml-4 mt-4 border border-white p-2">X</div>
-        <div className="h-screen bg-indigo-900 w-64 fixed h-screen text-center">
-          <div className="h-1/2">Image</div>
-          <ul>
-            <li className="my-1 text-white text-lg font-semibold">About</li>
-            <li className="my-1 text-white text-lg">Experience</li>
-            <li className="my-1 text-white text-lg">Education</li>
-            <li className="my-1 text-white text-lg">Skills</li>
-            <li className="my-1 text-white text-lg">Portfolio</li>
-            <li className="my-1 text-white text-lg">Interests</li>
-            <li className="my-1 text-white text-lg">Contact</li>
-          </ul>
-        </div>
-        <div className="ml-64 mt-40 ">
+      <main className="flex flex-col w-full flex-1 relative bg-indigo-100">
+        {small && (
+          <button
+            className="fixed bg-indigo-900 text-white z-10 ml-4 mt-4 border border-white p-2 rounded"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? 'X' : 'Menu'}
+          </button>
+        )}
+        {show && (
+          <div className="h-screen bg-indigo-900 w-64 fixed h-screen text-center">
+            <div className="h-1/2">Image</div>
+            <ul>
+              <li className="my-1 text-white text-lg font-semibold">About</li>
+              <li className="my-1 text-white text-lg">Experience</li>
+              <li className="my-1 text-white text-lg">Education</li>
+              <li className="my-1 text-white text-lg">Skills</li>
+              <li className="my-1 text-white text-lg">Portfolio</li>
+              <li className="my-1 text-white text-lg">Interests</li>
+              <li className="my-1 text-white text-lg">Contact</li>
+            </ul>
+          </div>
+        )}
+        <div className={`${!small && 'ml-64'} mt-40`}>
           <div className="mx-20">
             <div className="text-7xl tracking-tighter font-bold">
               <span>Shashang {' '}</span>
