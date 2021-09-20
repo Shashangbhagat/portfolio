@@ -4,20 +4,65 @@ import React from 'react';
 export default function Home() {
   const [small, setSmall] = React.useState(true);
   const [open, setOpen] = React.useState(false);
+  const [tab, setTab] = React.useState(1);
+  const [scrollSizeLarge, setScrollSize] = React.useState(false);
 
   const show = !small || open;
+  const smallSizeScroll = [800, 1600, 2300, 3100, 3900, 4700];
+  const largeSizeScroll = [630, 1300, 1960, 2700, 3650, 4320]
 
   React.useEffect(() => {
     const handleResize = () => {
+      console.log(window.innerWidth > 890);
+      if(window.innerWidth > 890) {
+        setScrollSize(true);
+      } else {
+        setScrollSize(false);
+      }
       if(window.innerWidth < 656) {
         setSmall(true);
       } else {
         setSmall(false);
       }
     }
+
+    const hanldeScroll = () => {
+      const scrollSize = scrollSizeLarge ? largeSizeScroll : smallSizeScroll;
+      if(window.pageYOffset < scrollSize[0]) {
+        setTab(1);
+      }
+      else if (window.pageYOffset > scrollSize[0] && window.pageYOffset < scrollSize[1] + 1) {
+        setTab(2);
+      } else if (window.pageYOffset > scrollSize[1] && window.pageYOffset < scrollSize[2] + 1) {
+        setTab(3);
+      } else if (window.pageYOffset > scrollSize[2] && window.pageYOffset < scrollSize[3] + 1) {
+        setTab(4);
+      } else if (window.pageYOffset > scrollSize[3] && window.pageYOffset < scrollSize[4] + 1) {
+        setTab(5);
+      } else if (window.pageYOffset > scrollSize[4] && window.pageYOffset < scrollSize[5] + 1) {
+        setTab(6);
+      } else if(window.pageYOffset > scrollSize[5]) {
+        setTab(7);
+      }
+    }
+    handleResize()
+    hanldeScroll()
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize);
-  }, [process.browser && window.innerWidth])
+    window.addEventListener('scroll', hanldeScroll);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', hanldeScroll);
+    }
+  }, [])
+
+  const handleListClick = (idx) => {
+    const scrollSize = scrollSizeLarge ? largeSizeScroll : smallSizeScroll;
+    if ([null, undefined].includes(idx)) {
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    } else {
+      window.scrollTo({top: scrollSize[idx] + 1, behavior: 'smooth'})
+    }
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
@@ -37,15 +82,17 @@ export default function Home() {
         )}
         {show && (
           <div className="h-screen bg-indigo-900 w-64 fixed h-screen text-center">
-            <div className="h-1/2">Image</div>
+            <div className="h-1/2 flex items-center justify-center">
+              <img src="/images/Shashang.webp" className="rounded-full h-1/2  border-4  border-indigo-200" />
+            </div>
             <ul>
-              <li className="my-1 text-white text-lg font-semibold">About</li>
-              <li className="my-1 text-white text-lg">Experience</li>
-              <li className="my-1 text-white text-lg">Education</li>
-              <li className="my-1 text-white text-lg">Skills</li>
-              <li className="my-1 text-white text-lg">Portfolio</li>
-              <li className="my-1 text-white text-lg">Interests</li>
-              <li className="my-1 text-white text-lg">Contact</li>
+              <li onClick={() => handleListClick()} className={` cursor-pointer my-1 text-white text-lg ${tab === 1 && 'font-semibold'}`}>About</li>
+              <li onClick={() => handleListClick(0)} className={`cursor-pointer my-1 text-white text-lg ${tab === 2 && 'font-semibold'}`}>Experience</li>
+              <li onClick={() => handleListClick(1)} className={`cursor-pointer my-1 text-white text-lg ${tab === 3 && 'font-semibold'}`}>Education</li>
+              <li onClick={() => handleListClick(2)} className={`cursor-pointer my-1 text-white text-lg ${tab === 4 && 'font-semibold'}`}>Skills</li>
+              <li onClick={() => handleListClick(3)} className={`cursor-pointer my-1 text-white text-lg ${tab === 5 && 'font-semibold'}`}>Portfolio</li>
+              <li onClick={() => handleListClick(4)} className={`cursor-pointer my-1 text-white text-lg ${tab === 6 && 'font-semibold'}`}>Interests</li>
+              <li onClick={() => handleListClick(5)} className={`cursor-pointer my-1 text-white text-lg ${tab === 7 && 'font-semibold'}`}>Contact</li>
             </ul>
           </div>
         )}
@@ -61,9 +108,24 @@ export default function Home() {
               that make a difference.
             </div>
             <div className="mt-14 flex">
-              <button className="bg-gray-700 text-white h-12 w-12 text-xl font-bold rounded-full">in</button>
-              <button className="text-white h-12 w-12 text-lg rounded-full ml-2"><img src="/logos/github-logo.png" /></button>
-              <button className="text-white h-12 w-12 text-lg rounded-full ml-2"><img src="/logos/fb-logo.png" /></button>
+              <a
+                href="https://www.linkedin.com/in/shashang-bhagat-67aa94120"
+                className="bg-gray-700 text-white h-12 w-12 text-xl font-bold rounded-full p-2 text-center"
+              >
+                in
+              </a>
+              <a 
+                className="text-white h-12 w-12 text-lg rounded-full ml-2"
+                href="https://github.com/Shashangbhagat"
+              >
+                <img src="/logos/github-logo.png" />
+              </a>
+              <a 
+                className="text-white h-12 w-12 text-lg rounded-full ml-2"
+                href="https://hi-in.facebook.com/sashang.bhagat"
+              >
+                <img src="/logos/fb-logo.png" />
+              </a>
             </div>
           </div>
           <div className="mx-20 mt-72">
